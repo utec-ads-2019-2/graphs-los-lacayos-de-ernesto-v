@@ -1,20 +1,23 @@
-
-
 #ifndef UNTITLED7_NODOS_H
 #define UNTITLED7_NODOS_H
 
+#include <list>
 #include "string.h"
+#include "Edge.h"
+template <typename A>
+class Edge;
 
-template <typename G>
+template <typename E>
 class Node {
-public:
-    typedef typename G::N N;
-    typedef typename G::Edge Edge;
-    typedef typename G::EdgeSeq EdgeSeq;
-    EdgeSeq edges;
 private:
-    N data;
+    E Data;
+    list<Edge<E>*>aristas;
+public:
+    Node(E valor){
+        Data = valor;
+    }
+    void printNode(){
+
+    }
 };
-
-
-#endif //UNTITLED7_NODOS_H
+#endif
