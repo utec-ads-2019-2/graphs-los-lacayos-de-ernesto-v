@@ -22,5 +22,11 @@ public:
     void setWeight(double x){
         peso = x;
     }
+    Node<E>* get_From(){
+        return from;
+    }
+    Node<E>* get_To(){
+        return to;
+    }
 };
 #endif
