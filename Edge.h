@@ -19,5 +19,8 @@ public:
         from = _from;
         to = _to;
     }
+    void setWeight(double x){
+        peso = x;
+    }
 };
 #endif
