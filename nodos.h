@@ -4,6 +4,7 @@
 #include <list>
 #include "string.h"
 #include "Edge.h"
+using namespace std;
 template <typename A>
 class Edge;
 
@@ -11,13 +12,18 @@ template <typename E>
 class Node {
 private:
     E Data;
-    list<Edge<E>*>aristas;
+    char color;
 public:
+    std::list<Edge<E>*>aristas;
     Node(E valor){
         Data = valor;
     }
-    void printNode(){
 
+    void insertEdge(Edge<E>*to){
+        aristas.push_back(to);
+    }
+    E getData(){
+        return Data;
     }
 };
 #endif
