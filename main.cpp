@@ -5,12 +5,14 @@
 #include <fstream>
 #include "Airports.h"
 #include "Edge.h"
+#include "Funciones.cpp"
 #include "graph.h"
 using namespace std;
 
 using json = nlohmann::json;
 
 int main(){
-    Graph<Aeropuerto> a("C:/Users/Jaime/Documents/GitHub/graphs-los-lacayos-de-ernesto-v/airports.json");
-
+    Graph<Aeropuerto*> a;
+    a = buildGraph("C:/Users/Jaime/Documents/GitHub/graphs-los-lacayos-de-ernesto-v/airports.json");
+    //"C:/Users/Jaime/Documents/GitHub/graphs-los-lacayos-de-ernesto-v/airports.json"
 }
