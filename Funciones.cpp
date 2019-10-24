@@ -1,11 +1,15 @@
+#ifndef FUNCIONES
+#define FUNCIONES
+#include "nlohmann/json.hpp"
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include "Airports.h"
 #include "graph.h"
-
 #include <cmath>
 
 using pareja = pair <int,Node<Aeropuerto*>*>;
-
-
-Edge<Aeropuerto*> * getEdge(Node<Aeropuerto*>* _from, Node<Aeropuerto*>* _to){
+Edge<Aeropuerto*>* getEdge(Node<Aeropuerto*>* _from, Node<Aeropuerto*>* _to){
     auto ed = new Edge<Aeropuerto*>(_from,_to);
     auto lat1 = _from->getData()->getLatitude();
     auto long1 =  _from->getData()->getLongitude();
@@ -45,3 +49,7 @@ Graph<Aeropuerto*> buildGraph(string a){
     }
     return *graf;
 }
+
+
+
+#endif
