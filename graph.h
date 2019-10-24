@@ -16,14 +16,19 @@ class Graph {
     map<int,Node<T>*>*nodos;
     bool isDigrafo;
 public:
-    Graph(string s){
+    Graph(){
         nodos = new map<int,Node<T>*>;
     }
-
 
     void printGraph(){
         for(auto it = nodos->cbegin() ; it != nodos->cend() ; it++){
         }
+    }
+    map<int,Node<T>*> * get_map(){
+        return nodos;
+    }
+    void insertNode(int id,Node<T>* nodo){
+        nodos[id] = nodo;
     }
 };
 
