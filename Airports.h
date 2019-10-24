@@ -1,4 +1,3 @@
-
 #ifndef UNTITLED7_AIRPORTS_H
 #define UNTITLED7_AIRPORTS_H
 
@@ -6,7 +5,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
-
+#include <iostream>
 
 using namespace std;
 
@@ -40,10 +39,8 @@ public:
             Destinos->push_back(atoi(destino.c_str()));
         }
     }
+    virtual ~Aeropuerto() = default;
 
-
-    virtual ~Aeropuerto() {
-    }
     void print() {
         cout << Ciudad << endl;
         cout << Nombre << endl;
@@ -62,8 +59,12 @@ public:
     vector <int>* get_destinos(){
         return Destinos;
     }
+    double getLatitude(){
+        return Latitud;
+    }
+    double getLongitude(){
+        return Longitud;
+    }
 };
 
-
-
-#endif //UNTITLED7_AIRPORTS_H
+#endif
