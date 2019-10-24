@@ -1,4 +1,5 @@
 #include "graph.h"
+
 #include <cmath>
 
 using pareja = pair <int,Node<Aeropuerto*>*>;

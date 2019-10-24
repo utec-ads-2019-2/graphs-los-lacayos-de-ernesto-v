@@ -1,0 +1,15 @@
+[
+{
+  "City": "Ciudad 1",
+  "Name": "Nodo 1 Airport",
+  "Country": "Una Isla",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "1",
+  "destinations": [
+    "3916",
+    "3949",
+    "3928"
+  ]
+}
+]

@@ -39,7 +39,6 @@ public:
             Destinos->push_back(atoi(destino.c_str()));
         }
     }
-    virtual ~Aeropuerto() = default;
 
     void print() {
         cout << Ciudad << endl;
@@ -53,18 +52,25 @@ public:
             cout << "   " << *i << endl;
         }
     }
+
     int get_Id(){
         return Id;
     }
+
     vector <int>* get_destinos(){
         return Destinos;
     }
+
     double getLatitude(){
         return Latitud;
     }
+
     double getLongitude(){
         return Longitud;
     }
+
+    virtual ~Aeropuerto() = default;
+
 };
 
 #endif

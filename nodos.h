@@ -22,6 +22,7 @@ public:
     void insertEdge(Edge<E>*to){
         aristas.push_back(to);
     }
+
     E getData(){
         return Data;
     }

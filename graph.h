@@ -14,7 +14,7 @@ class Node;
 template <typename T>
 class Graph {
     map<int,Node<T>*>*nodos;
-    bool isDigrafo;
+
 public:
     Graph(){
         nodos = new map<int,Node<T>*>;
@@ -27,8 +27,16 @@ public:
     map<int,Node<T>*> * get_map(){
         return nodos;
     }
-    void insertNode(int id,Node<T>* nodo){
-        nodos[id] = nodo;
+    void insertNode( Aeropuerto *nuevoaeropuerto){
+
+        for(auto it = nodos->cbegin() ; it != nodos->cend();it++){
+            Graph::get_map()->get_allocator();
+            
+        }
+    }
+
+    void deleteNode(int id , Node<T>* nodo){
+        nodos[id]= nodo;
     }
 };
 

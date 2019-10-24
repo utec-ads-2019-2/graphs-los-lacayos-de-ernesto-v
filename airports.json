@@ -18900,7 +18900,7 @@
       "Name": "Praia International Airport",
       "Country": " Santiago Island",
       "Longitude": "14.9245",
-      "Latitude": "GVNP",
+      "Latitude": "-23.485",
       "Id": "5674",
       "destinations": [
         "1050",
@@ -18925,7 +18925,7 @@
       "Name": "Sao Filipe Airport",
       "Country": " Fogo Island",
       "Longitude": "14.885",
-      "Latitude": "GVSF",
+      "Latitude": "-24.4800",
       "Id": "5675",
       "destinations": [
         "5674"
@@ -28652,7 +28652,6 @@
         "3908",
         "3275",
         "3282",
-        "3910",
         "3929",
         "3901",
         "3928"
@@ -49246,7 +49245,7 @@
       "Name": "Robin Hood Doncaster Sheffield Airport",
       "Country": " Sheffield",
       "Longitude": "53.474722",
-      "Latitude": "EGCN",
+      "Latitude": "-1.0044",
       "Id": "5562",
       "destinations": [
         "499",
