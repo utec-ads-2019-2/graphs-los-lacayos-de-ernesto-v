@@ -32,7 +32,7 @@ public:
         for(auto it = nodos->cbegin(); it != nodos->cend(); it++){
                 auto temp = it->second;
                 auto lista = temp->getAristas();
-                for(auto it2= ;i < lista->size(); i++)
+                for(auto it2= lista->cbegin();it2 != lista->cend(); it2++){
 
                 }
         }
