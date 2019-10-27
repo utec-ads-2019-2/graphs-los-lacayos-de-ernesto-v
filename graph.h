@@ -38,6 +38,31 @@ public:
         }
 
     }
+
+    void insertNode(Node<T>* nuevo_nodo){
+        nodos->insert(nuevo_nodo);
+    }
+
+    bool buscarvertice(Node<T>* elvertice){
+        
+    }
+
+    bool buscararista(Node<T>* laarista){
+
+    }
+
+    bool esconexo(T grafo){
+
+    }
+
+    bool fuerteconexo(T grafo){
+
+    }
+
+    bool bipartito(T grafo){
+
+    }
+
 };
 
 #endif
