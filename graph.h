@@ -26,7 +26,8 @@ public:
     map<int,Node<T>*> * get_map(){
         return nodos;
     }
-    void insertNode(int id,Node<T>* nodo){
+    void insertNode(Node<T>* nodo){
+        int id = nodo->getId();
         nodos[id] = nodo;
     }
     void removeNode(int id){
