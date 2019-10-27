@@ -22,14 +22,15 @@ public:
     void setWeight(double x){
         peso = x;
     }
-
     Node<E>* get_From(){
         return from;
     }
     Node<E>* get_To(){
         return to;
     }
-
+    double getWeight(){
+        return peso;
+    }
     ~Edge(){
         delete from;
         delete to;
