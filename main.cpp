@@ -16,11 +16,9 @@ int main(){
     Graph<Aeropuerto*> a;
     a = buildGraph("C:/Users/saidchoquehuanca/Documents/GitHub/graphs-los-lacayos-de-ernesto-v/airports.json");
     //"C:/Users/Jaime/Documents/GitHub/graphs-los-lacayos-de-ernesto-v/airports.json"
-    Node<Aeropuerto*> *temp = nullptr;
-    ifstream ifs("/Users/saidchoquehuanca/ClionProjects/untitled7/nuevoair.json");
-    json nuevo =json::parse(ifs);
-    temp = new Aeropuerto( Node* nuevo);
-
-    a.insertNode(temp);
-
+    //Node<Aeropuerto*> *temp = nullptr;
+    //ifstream ifs("/Users/saidchoquehuanca/ClionProjects/untitled7/nuevoair.json");
+    //json nuevo =json::parse(ifs);
+    //temp = new Aeropuerto( Node* nuevo);
+    a.
 }

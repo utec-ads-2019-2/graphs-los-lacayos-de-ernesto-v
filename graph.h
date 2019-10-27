@@ -19,49 +19,33 @@ public:
 
     void printGraph(){
         for(auto it = nodos->cbegin() ; it != nodos->cend() ; it++){
-
+            cout<<nodos<<endl;
         }
     }
     map<int,Node<T>*> * get_map(){
         return nodos;
     }
-    void insertNode(int id,Node<T>* nodo){
-        nodos[id] = nodo;
-    }
+
     void removeNode(int id){
         for(auto it = nodos->cbegin(); it != nodos->cend(); it++){
                 auto temp = it->second;
                 auto lista = temp->getAristas();
                 for(auto it2= lista->cbegin();it2 != lista->cend(); it2++){
-
                 }
         }
-
     }
-
     void insertNode(Node<T>* nuevo_nodo){
         nodos->insert(nuevo_nodo);
     }
+    bool buscarvertice(Node<T>* elvertice){}
 
-    bool buscarvertice(Node<T>* elvertice){
-        
-    }
+    bool buscararista(Node<T>* laarista){}
 
-    bool buscararista(Node<T>* laarista){
+    bool esconexo(T grafo){}
 
-    }
+    bool fuerteconexo(T grafo){}
 
-    bool esconexo(T grafo){
-
-    }
-
-    bool fuerteconexo(T grafo){
-
-    }
-
-    bool bipartito(T grafo){
-
-    }
+    bool bipartito(T grafo){}
 
 };
 
