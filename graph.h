@@ -18,9 +18,7 @@ public:
     }
 
     void printGraph(){
-        for(auto it = nodos->cbegin() ; it != nodos->cend() ; it++){
-            cout<<nodos<<endl;
-        }
+
     }
     map<int,Node<T>*> * get_map(){
         return nodos;
