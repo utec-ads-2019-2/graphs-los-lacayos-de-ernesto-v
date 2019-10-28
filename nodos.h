@@ -2,7 +2,6 @@
 #define UNTITLED7_NODOS_H
 
 #include <list>
-#include <iterator>
 #include "string.h"
 #include "Edge.h"
 using namespace std;
@@ -47,6 +46,12 @@ public:
     }
     ~Node(){
         delete aristas;
+    }
+    char getColor(){
+        return color;
+    }
+    void setColor(char a){
+        color = a;
     }
 };
 #endif
