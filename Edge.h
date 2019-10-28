@@ -22,6 +22,8 @@ public:
     void setWeight(double x){
         peso = x;
     }
+
+
     Node<E>* get_From(){
         return from;
     }
@@ -34,8 +36,7 @@ public:
     ~Edge(){
         delete from;
         delete to;
-        from = nullptr;
-        to = nullptr;
+
     }
 };
 #endif

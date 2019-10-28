@@ -2,6 +2,7 @@
 #define UNTITLED7_NODOS_H
 
 #include <list>
+#include <iterator>
 #include "string.h"
 #include "Edge.h"
 using namespace std;

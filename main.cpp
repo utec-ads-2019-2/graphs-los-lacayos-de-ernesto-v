@@ -14,11 +14,22 @@ using json = nlohmann::json;
 
 int main(){
     Graph<Aeropuerto*> a;
-    a = buildGraph("C:/Users/saidchoquehuanca/Documents/GitHub/graphs-los-lacayos-de-ernesto-v/airports.json");
+    a = buildGraph("C:/Users/saidchoquehuanca/Documents/GitHub/graphs-los-lacayos-de-ernesto-v/conexo.json");
     //"C:/Users/Jaime/Documents/GitHub/graphs-los-lacayos-de-ernesto-v/airports.json"
     //Node<Aeropuerto*> *temp = nullptr;
     //ifstream ifs("/Users/saidchoquehuanca/ClionProjects/untitled7/nuevoair.json");
     //json nuevo =json::parse(ifs);
     //temp = new Aeropuerto( Node* nuevo);
-    a.
+    if(a.buscarVertice(11)){
+        cout<<"Vertice Encontrado\n";
+    }
+
+    if(a.buscarArista(a.buscarVertice(10),a.buscarVertice(11))){
+        cout<<"La arista existe\n";
+    }
+
+    if(!a.esconexo()){
+        cout<<"Conexo\n";
+    }
+
 }

@@ -5,13 +5,14 @@
 #include <fstream>
 #include <iostream>
 
+
 template <typename E>
 class Node;
 
 template <typename T>
 class Graph {
-    map<int,Node<T>*>*nodos;
-    bool isConexo;
+    map<int,Node<T>* > *nodos;
+    bool isConexo=false;
     bool isBipartito;
     double densidad;
     int Aristas;
@@ -23,7 +24,7 @@ public:
 
     void printGraph(){
         for(auto it = nodos->cbegin() ; it != nodos->cend() ; it++){
-
+            it->second->getAristas()->empty();
         }
     }
     map<int,Node<T>*> * get_map(){
@@ -125,8 +126,33 @@ public:
     }
     
     bool esconexo(){
-
+        map<int, pair<bool ,bool > > conexodet;
+        auto aristas_a = new list<Edge<T>*>;
+        for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
+            conexodet.insert(pair<int,pair<bool,bool>>(it->first,pair<bool ,bool >(false,false)));
+        }
+        for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
+            Node<T> * ptr = it->second;
+            conexodet.at(it->first).first = true;
+            if(ptr->getAristas()->empty() or ptr->getAristas()->front()->get_To() == nullptr){
+                return false;
+            }else {
+                *aristas_a = *(ptr->getAristas());
+                for (int i = 0; i< aristas_a->size();i++) {
+                    int id = aristas_a->front()->get_To()->getId();
+                    aristas_a->pop_front();
+                    conexodet.at(id).second=true;
+                }
+            }
+        }
+        for (auto it = conexodet.begin(); it != conexodet.end() ; it++){
+            if(!it->second.first or !it->second.second ){
+                return false;
+            }
+        }
+        return true;
     }
+
     bool fuerteconexo(){
 
     }
