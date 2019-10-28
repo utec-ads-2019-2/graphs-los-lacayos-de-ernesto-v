@@ -11,7 +11,6 @@ class Node;
 template <typename T>
 class Graph {
     map<int,Node<T>*>*nodos;
-    bool isDigrafo;
     bool isConexo;
     bool isBipartito;
     double densidad;
@@ -110,6 +109,21 @@ public:
         }
         return nullptr;
     }
+    
+    bool esdigrafo(){
+        for (auto it = nodos->begin(); it != nodos->end(); it++) {
+            list<Edge<T>*> edges = *(it->second->getAristas());
+            for (int i = 0; i < edges.size(); i++) {
+                int id = edges.front()->getTo();
+                edges.pop_front();
+                if(buscarArista(it->second, id)==nullptr or buscarArista(id,it->second) == nullptr){
+                    return false;
+                }
+            }
+        }
+        return true ;
+    }
+    
     bool esconexo(){
 
     }
