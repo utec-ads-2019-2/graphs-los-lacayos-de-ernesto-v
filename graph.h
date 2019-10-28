@@ -5,14 +5,14 @@
 #include <fstream>
 #include <iostream>
 
-
 template <typename E>
 class Node;
 
 template <typename T>
 class Graph {
-    map<int,Node<T>* > *nodos;
-    bool isConexo=false;
+    map<int,Node<T>*>*nodos;
+    bool isDigrafo;
+    bool isConexo;
     bool isBipartito;
     double densidad;
     int Aristas;
@@ -24,11 +24,24 @@ public:
 
     void printGraph(){
         for(auto it = nodos->cbegin() ; it != nodos->cend() ; it++){
-            it->second->getAristas()->empty();
+
         }
     }
     map<int,Node<T>*> * get_map(){
         return nodos;
+    }
+    bool esDigrafo(){
+        for (auto it = nodos->begin(); it != nodos->end(); it++) {
+            list<Edge<T>*> edges = *(it->second->getAristas());
+            for (int i = 0; i < edges.size(); i++) {
+                auto id = edges.front()->get_To();
+                edges.pop_front();
+                if(buscarArista(it->second, id)==nullptr or buscarArista(id,it->second) == nullptr){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     void insertNode(Node<T>* nodo){
         int id = nodo->getId();
@@ -110,49 +123,34 @@ public:
         }
         return nullptr;
     }
-    
-    bool esDigrafo(){
-        for (auto it = nodos->begin(); it != nodos->end(); it++) {
-            list<Edge<T>*> edges = *(it->second->getAristas());
-            for (int i = 0; i < edges.size(); i++) {
-                auto id = edges.front()->get_To();
-                edges.pop_front();
-                if(buscarArista(it->second, id)==nullptr or buscarArista(id,it->second) == nullptr){
-                    return false;
-                }
-            }
-        }
-        return true ;
-    }
-    
     bool esconexo(){
         map<int, pair<bool ,bool > > conexodet;
         auto aristas_a = new list<Edge<T>*>;
         for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
             conexodet.insert(pair<int,pair<bool,bool>>(it->first,pair<bool ,bool >(false,false)));
         }
-        for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
+        for(auto it = nodos->begin(); it != nodos->end() ; ++it) {
             Node<T> * ptr = it->second;
             conexodet.at(it->first).first = true;
             if(ptr->getAristas()->empty() or ptr->getAristas()->front()->get_To() == nullptr){
                 return false;
             }else {
                 *aristas_a = *(ptr->getAristas());
-                for (int i = 0; i< aristas_a->size();i++) {
-                    int id = aristas_a->front()->get_To()->getId();
-                    aristas_a->pop_front();
+                auto temp= *aristas_a;
+                for (auto it2 = temp.cbegin(); it2 != temp.cend();it2++) {
+                    int id = temp.front()->get_To()->getId();   //->front()->get_To()->getId();
+                    temp.pop_front();
                     conexodet.at(id).second=true;
                 }
             }
         }
-        for (auto it = conexodet.begin(); it != conexodet.end() ; it++){
+        for(auto it = conexodet.begin(); it != conexodet.end() ; it++){
             if(!it->second.first or !it->second.second ){
                 return false;
             }
         }
         return true;
     }
-
     bool fuerteconexo(){
 
     }
@@ -162,6 +160,7 @@ public:
     bool bipartito(){
 
     }
+
     void calculateDensity(){
         auto temp = Size();
         if(temp <= 1){
@@ -189,4 +188,3 @@ public:
 };
 
 #endif
-
