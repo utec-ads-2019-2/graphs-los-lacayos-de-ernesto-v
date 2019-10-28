@@ -110,11 +110,11 @@ public:
         return nullptr;
     }
     
-    bool esdigrafo(){
+    bool esDigrafo(){
         for (auto it = nodos->begin(); it != nodos->end(); it++) {
             list<Edge<T>*> edges = *(it->second->getAristas());
             for (int i = 0; i < edges.size(); i++) {
-                int id = edges.front()->getTo();
+                auto id = edges.front()->get_To();
                 edges.pop_front();
                 if(buscarArista(it->second, id)==nullptr or buscarArista(id,it->second) == nullptr){
                     return false;
