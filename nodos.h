@@ -20,6 +20,7 @@ public:
     Node(E valor){
         aristas = new list<Edge<E>*>;
         Data = valor;
+        color = 'B';
     }
 
     void insertEdge(Edge<E>*to){
@@ -42,6 +43,9 @@ public:
     }
     int getId(){
         return id;
+    }
+    ~Node(){
+        delete aristas;
     }
 };
 #endif
