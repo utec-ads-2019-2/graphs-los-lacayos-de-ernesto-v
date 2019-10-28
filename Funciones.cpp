@@ -15,7 +15,7 @@ Edge<Aeropuerto*>* getEdge(Node<Aeropuerto*>* _from, Node<Aeropuerto*>* _to){
     auto long1 =  _from->getData()->getLongitude();
     auto lat2 = _to->getData()->getLatitude();
     auto long2 =  _to->getData()->getLongitude();
-    double peso =  12742*asin(sqrt(pow(sin((lat2-lat1)*(M_PI/180)/2),2) + pow(sin((long2-long1)*(M_PI/180)/2),2) * cos(lat1*M_PI/180) * cos(lat2*M_PI/180)));;
+    auto peso =  12742*asin(sqrt(pow(sin((lat2-lat1)*(M_PI/180)/2),2) + pow(sin((long2-long1)*(M_PI/180)/2),2) * cos(lat1*M_PI/180) * cos(lat2*M_PI/180)));;
     ed->setWeight(peso);
     return ed;
 }
@@ -43,8 +43,9 @@ Graph<Aeropuerto*> buildGraph(string a){
         auto vec = temp->getData()->get_destinos();
         for(int i = 0; i < vec->size(); i++){
             if(inMap(*mapa,(*vec)[i])){
-                auto newEdge = getEdge(temp,(*mapa)[(*vec)[i]]);
-                temp->insertEdge(newEdge);
+               auto newEdge = getEdge(temp,(*mapa)[(*vec)[i]]);
+               temp->insertEdge(newEdge);
+               graf->AumtentarArista();
             }
         }
     }
