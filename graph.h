@@ -157,8 +157,61 @@ public:
     int get_Aristas(){
         return Aristas;
     }
+   
+    void setNodesBlank(){
+        for(auto it  = nodos->cbegin(); it!= nodos->cend(); it++){
+            auto temp = it->second;
+            temp->setColor('B');
+        }
+    }
     bool bipartito(){
+        setNodesBlank();
+        for(auto it = nodos->cbegin(); it!= nodos->cend(); it++){
+            auto temp = it->second;
+            if(temp->getColor() == 'B'){
+                char color = 'A';
+                auto temp2 = temp->getAristas();
+                for(auto it = temp2->cbegin(); it!= temp2->cend() ; it++){
+                    if((*it)->get_To()->getColor() == 'A'){
+                        color = 'R';
+                    }
+                }
+                if(!Biparticion(temp,color))
+                    return false;
+            }
+        }
+        return true;
+    }
 
+    bool Biparticion(Node<T>*a,char color){
+        a->setColor(color);
+        vector<Node<T>*>newvec;
+        auto temp = a->getAristas();
+        for(auto it = temp->cbegin(); it!= temp->cend(); it++){
+               auto nodo = (*it)->get_To();
+               if(nodo->getColor() == 'B'){
+                   newvec.push_back(nodo);
+               }
+               else if(nodo->getColor() == color){
+                   return false;
+               }
+        }
+        if(newvec.size()== 0){
+            return true;
+        }
+        if(color == 'A'){
+            for(int i = 0; i < newvec.size(); i++){
+               if(!Biparticion(newvec[i],'R'))
+                   return false;
+            }
+        }
+        else if(color == 'R'){
+            for(int i = 0; i < newvec.size(); i++){
+                if(!Biparticion(newvec[i],'A'))
+                    return false;
+            }
+        }
+        return true;
     }
 
     void calculateDensity(){
