@@ -1,7 +1,3 @@
-//
-// Created by saidchoquehuanca on 9/10/2019.
-//
-
 #ifndef UNTITLED7_AIRPORTS_H
 #define UNTITLED7_AIRPORTS_H
 
@@ -9,17 +5,12 @@
 #include <string>
 #include <fstream>
 #include <vector>
-
+#include <iostream>
 
 using namespace std;
 
 using json = nlohmann::json;
 
-//ifstream ifs("/Users/saidchoquehuanca/ClionProjects/untitled7/airports.json");
-//json archivo =json::parse(ifs);
-
-//const json::value_type& airports = archivo;
-//const json::value_type& destinations = archivo[0]["destinations"];
 
 class Aeropuerto{
 protected:
@@ -29,30 +20,51 @@ protected:
     double Longitud;
     double Latitud;
     int Id;
-    vector<int> Destinos;
+    vector<int> *Destinos;
 public:
-    Aeropuerto(json::value_type& airports) {
+    Aeropuerto(json airports) {
+        Destinos = new vector<int>;
         Ciudad = airports["City"];
         Pais = airports["Country"];
         Nombre = airports["Name"];
-        Longitud = airports["Longitude"];
-        Latitud = airports["Latitude"];
-        Id = airports["Id"];
+        string longi = airports["Longitude"];
+        string lati = airports["Latitude"];
+        Longitud = atof(longi.c_str());
+        Latitud = atof(lati.c_str());
+        string id= airports["Id"];
+        Id = atoi(id.c_str());
         json destinations = airports["destinations"];
         for(auto i = destinations.begin() ; i != destinations.end() ; i++){
-            int k;
             string destino = *i;
-            k = atoi((destino).c_str());
-            Destinos.push_back(k);
+            Destinos->push_back(atoi(destino.c_str()));
         }
     }
+    virtual ~Aeropuerto() = default;
 
-
-    virtual ~Aeropuerto() {
+    void print() {
+        cout << Ciudad << endl;
+        cout << Nombre << endl;
+        cout << Pais << endl;
+        cout << Longitud << endl;
+        cout << Latitud << endl;
+        cout << Id << endl;
+        cout << "Destination:" << endl;
+        for (auto i = Destinos->begin(); i != Destinos->end(); i++) {
+            cout << "   " << *i << endl;
+        }
     }
-
+    int get_Id(){
+        return Id;
+    }
+    vector <int>* get_destinos(){
+        return Destinos;
+    }
+    double getLatitude(){
+        return Latitud;
+    }
+    double getLongitude(){
+        return Longitud;
+    }
 };
 
-
-
-#endif //UNTITLED7_AIRPORTS_H
+#endif
