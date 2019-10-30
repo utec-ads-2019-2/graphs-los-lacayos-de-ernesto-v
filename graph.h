@@ -105,6 +105,7 @@ public:
     void printAristas(){
         for(auto it = nodos->cbegin(); it!= nodos->cend();it++){
             auto temp = it->second;
+
             temp->print_aristas();
             cout << endl;
         }
@@ -328,23 +329,23 @@ public:
         auto nodo = buscarVertice(key);
         if(nodo){
             if(!esDigrafo()) {
+                cout << "El orden de las aristas es: ";
             vector<Node<T> *> a;
             Graph<T> newgraph;
             for(auto it = nodos->cbegin(); it!= nodos->cend(); it++){
                 auto newnode = new Node<T>(it->second);
                 newgraph.insertNode(newnode);
             }
-            auto nodo = nodos->cbegin()->second;
             for(int i = 0; i < nodos->size(); i++){
                    a.push_back(nodo);
                    auto ed = findMin(a);
                    if(ed){
-
                        ed->set_taken();
                        auto temp = buscarArista(ed->get_To(),ed->get_From());
                        temp->set_taken();
                        auto nodo_to = newgraph.buscarVertice(ed->get_To()->getId());
                        auto nodo_from = newgraph.buscarVertice(ed->get_From()->getId());
+                       cout << "{ " << nodo_from->getId() << " , " << nodo_to->getId() << " } ";
                        newgraph.insertEdge(nodo_from,nodo_to,ed->getWeight());
                        newgraph.insertEdge(nodo_to,nodo_from,ed->getWeight());
                        if(in(a,ed->get_To()))
@@ -356,40 +357,42 @@ public:
                        break;
                    }
             }
+            cout << endl;
             return newgraph;
         }
         else{
-            cout << "El grafo es direccionado; se necesita un Grafo no direccionado";
-            return this;
+                cout << "El grafo es direccionado; se necesita un Grafo no direccionado";
+            throw new out_of_range("El grafo es direccionado; se necesita un Grafo no direccionado");
+
             }
         }
         else{
-            cout << "EL nodo ingresado no existe";
-            return this;
+            cout << "El nodo ingresado no existe";
+            throw new out_of_range("El nodo ingresado no existe");
         }
     }
 
-    void mapkrus(map<int, Node<T>> mapa, Node<T>* node){
-        if(!mapa->operator[](node->getId())) {
+    void mapkrus(map<int, Node<T>*>* mapa, Node<T>* node){
+        if(mapa->operator[](node->getId()) == nullptr) {
             mapa->erase(node->getId());
             mapa->insert(pair<int, Node<T>*>(node->getId(),node));
         }
         else
             return;
     }
-    bool id_null(map<int, Node<T>> mapa, Node<T>* node){
-        if(mapa->operator[](node->getId()))
+    bool id_null(map<int, Node<T>*>* mapa, Node<T>* node){
+        if(mapa->operator[](node->getId()) == nullptr)
             return true;
         else
             return false;
     }
 
     Graph <T> kruskal(){
-        if(esDigrafo()){
-            //multimap<list<Edge<T>>,pair<T,T>> edges_sort ;
-            list<Edge<T>> edges_sort = new list<Edge<T>*>;
+        if(!esDigrafo()){
+            auto edges_sort = new list<Edge<T>*>;
             auto *graphkruskal = new Graph;
-            map<int , Node<T>> mapeo_for_krus = graphkruskal->get_map();
+
+            auto mapeo_for_krus = graphkruskal->get_map();
             for(auto it = nodos->begin(); it != nodos->end() ; it++){
                 auto temp1 = it->second;
                 for(auto temp_edges = it->second->getAristas()->begin(); temp_edges !=it->second->getAristas()->end(); temp_edges++ ){
@@ -397,40 +400,44 @@ public:
                         edges_sort->push_back(*temp_edges);
                     }else{
                         int ctrl=0;
-                        for(auto it_temp = edges_sort->begin();it_temp != edges_sort->end() ; it_temp++) {
-                            if((*it_temp)->getWeight() < (*temp_edges)->getWeight() && edges_sort->size()<ctrl){
-                                edges_sort->insert(it_temp,(*temp_edges));
-                                break;
-                            }
+                        auto it_temp=edges_sort->begin() = edges_sort->begin();
+                        while((*it_temp)->getWeight() < (*temp_edges)->getWeight() && edges_sort->size()<ctrl){
+                            it++;
                             ctrl++;
                         }
+                        edges_sort->insert(it_temp,(*temp_edges));
 
                     }
                 }
             }
-            do{
-                auto node_to = new Node<T>(edges_sort->back()->get_To());
-                auto node_from = new Node<T>(edges_sort->back()->get_From());
+            do {
+                auto tempto = edges_sort->back()->get_To()->getId();
+                auto node_to = graphkruskal->buscarVertice(tempto);
+                if (!node_to)
+                    node_to = new Node<T>(edges_sort->back()->get_To());
+                auto tempfrom = edges_sort->back()->get_From()->getId();
+                auto node_from = graphkruskal->buscarVertice(tempfrom);
+                if(!node_from)
+                    node_from = new Node<T>(edges_sort->back()->get_From());
                 node_to->setId(node_to->getId());
-                node_from->setId(node_to->getId());
-                node_to->getAristas()->clear();
-                node_from->getAristas()->clear();
+                node_from->setId(node_from->getId());
                 edges_sort->pop_back();
-                if(!id_null(mapeo_for_krus,node_from) || !id_null(mapeo_for_krus,node_to)){
+                if(id_null(mapeo_for_krus,node_from)==true or id_null(mapeo_for_krus,node_to)==true){
                     mapkrus(mapeo_for_krus,node_from);
                     mapkrus(mapeo_for_krus,node_to);
-                    auto temp_e = new Edge<T>(node_from,node_to);
-                    graphkruskal->insertEdge(node_from,node_to,temp_e->getWeight());
-                    graphkruskal->insertEdge(node_to,node_from,temp_e->getWeight());
+
+                    auto newed = buscarArista(edges_sort->back()->get_From(),edges_sort->back()->get_To());
+                    graphkruskal->insertEdge(node_from,node_to,newed->getWeight());
+                    graphkruskal->insertEdge(node_to,node_from,newed->getWeight());
                 }
             }
-            while(edges_sort->size()!=0);
+            while(edges_sort->size()>0);
             return *graphkruskal;
         }
         else{
             cout<<"No se puede construir";
-            return this;
         }
+
     }
     void getProperties(){
         isConex();
@@ -443,7 +450,7 @@ public:
             if(fConexto)
                 cout << "Es fuerteconexo"<< endl ;
             else
-                cout << "No es fuertemente conexo";
+                cout << "No es fuertemente conexo" << endl;
         }
         else {
             cout << "Es un grafo no dirigido" << endl;
