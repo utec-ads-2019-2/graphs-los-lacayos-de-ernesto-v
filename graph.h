@@ -5,6 +5,8 @@
 #include <limits.h>
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include "disjointset.h"
 
 template <typename E>
 class Node;
@@ -358,7 +360,84 @@ public:
             cout << "El grafo es direccionado; se necesita un Grafo no direccionado";
         }
     }
-    
+
+    void mapkrus(map<int, Node<T>*>* mapa, Node<T>* node){
+        if(!mapa->operator[](node->getId())) {
+            mapa->erase(node->getId());
+            mapa->insert(pair<int, Node<T>*>(node->getId(),node));
+        }
+        else
+            return;
+    }
+    bool id_null(map<int, Node<T>*>* mapa, Node<T>* node){
+        if(mapa->operator[](node->getId()))
+            return true;
+        else
+            return false;
+    }
+
+    Graph <T> kruskal(){
+        if(!isDigrafo){
+            //multimap<list<Edge<T>*>*,pair<T,T>> edges_sort ;
+            list<Edge<T>*>* edges_sort = new list<Edge<T>*>;
+            auto *graphkruskal = new Graph;
+            map<int , Node<T>*>* mapeo_for_krus = graphkruskal->get_map();
+            for(auto it = nodos->begin(); it != nodos->end() ; it++){
+                auto temp1 = it->second;
+                for(auto temp_edges = it->second->getAristas()->begin(); temp_edges !=it->second->getAristas()->end(); temp_edges++ ){
+                    if (!edges_sort->size()){
+                        edges_sort->push_back(*temp_edges);
+                    }else{
+                        int ctrl=0;
+                        for(auto it_temp = edges_sort->begin();it_temp != edges_sort->end() ; it_temp++) {
+                            if((*it_temp)->getWeight() < (*temp_edges)->getWeight() && edges_sort->size()<ctrl){
+                                edges_sort->insert(it_temp,(*temp_edges));
+                                break;
+                            }
+                            ctrl++;
+                        }
+
+                    }
+                }
+            }
+            do{
+                auto node_to = new Node<T>(edges_sort->back()->get_To());
+                auto node_from = new Node<T>(edges_sort->back()->get_From());
+                node_to->setId(node_to->getId());
+                node_from->setId(node_to->getId());
+                node_to->getAristas()->clear();
+                node_from->getAristas()->clear();
+                edges_sort->pop_back();
+                if(!id_null(mapeo_for_krus,node_from) || !id_null(mapeo_for_krus,node_to)){
+                    mapkrus(mapeo_for_krus,node_from);
+                    mapkrus(mapeo_for_krus,node_to);
+                    graphkruskal->insertEdge(node_from,node_from,edges_sort->size());
+                    graphkruskal->insertEdge(node_to,node_to,edges_sort->size());
+                }
+            }
+            while(edges_sort->size()!=0);
+            /*for(auto it = nodos->cbegin(); it != nodos->cend() ; ++it){
+                Node<T>* it_nod = it->second;
+                auto new_nodo = new Node<T>((it)->second);
+                auto edges = (*it).second->getAristas();
+                disjoinset.makeset(new_nodo);
+                for(auto it_edges = edges->begin() ; it_edges != edges->end(); it_edges++){
+                    edges_sort.insert({(*it_edges)->getWeight, make_pair((*it_edges)->get_From()->getData(), (*it_edges)->get_To()->getData())});
+                }
+            }*/
+
+            /*for(auto it_sort = edges_sort->cbegin() ; it_sort!= edges_sort->cend() ; it_sort++){
+                if(disjoinset.Find_Node((it_sort->second)->get_From()->getData()) != disjoinset.Find_Node(it_sort->second->get_From()->getData())){
+                    graphkruskal->insertEdge(it_sort->second.first , it_sort->second.second , it_sort->first);
+                    disjoinset.Union(it_sort->second.first , it_sort->second.second );
+                }
+            }*/
+            return *graphkruskal;
+        }else{
+            cout<<"No s epuede construir";
+        }
+    }
+
     void getProperties(){
         isConex();
         bipartito();
