@@ -376,8 +376,8 @@ public:
             return false;
     }
 
-    Graph <T> kruskal(){
-        if(!isDigrafo){
+    Graph <T> kruskal( Graph<T*> A){
+        if(A.isDigrafo()){
             //multimap<list<Edge<T>*>*,pair<T,T>> edges_sort ;
             list<Edge<T>*>* edges_sort = new list<Edge<T>*>;
             auto *graphkruskal = new Graph;
@@ -411,30 +411,16 @@ public:
                 if(!id_null(mapeo_for_krus,node_from) || !id_null(mapeo_for_krus,node_to)){
                     mapkrus(mapeo_for_krus,node_from);
                     mapkrus(mapeo_for_krus,node_to);
-                    graphkruskal->insertEdge(node_from,node_from,edges_sort->size());
-                    graphkruskal->insertEdge(node_to,node_to,edges_sort->size());
+                    auto temp_e = new Edge<T>(node_from,node_to);
+                    graphkruskal->insertEdge(node_from,node_to,temp_e->getWeight());
+                    graphkruskal->insertEdge(node_to,node_from,temp_e->getWeight());
                 }
             }
             while(edges_sort->size()!=0);
-            /*for(auto it = nodos->cbegin(); it != nodos->cend() ; ++it){
-                Node<T>* it_nod = it->second;
-                auto new_nodo = new Node<T>((it)->second);
-                auto edges = (*it).second->getAristas();
-                disjoinset.makeset(new_nodo);
-                for(auto it_edges = edges->begin() ; it_edges != edges->end(); it_edges++){
-                    edges_sort.insert({(*it_edges)->getWeight, make_pair((*it_edges)->get_From()->getData(), (*it_edges)->get_To()->getData())});
-                }
-            }*/
-
-            /*for(auto it_sort = edges_sort->cbegin() ; it_sort!= edges_sort->cend() ; it_sort++){
-                if(disjoinset.Find_Node((it_sort->second)->get_From()->getData()) != disjoinset.Find_Node(it_sort->second->get_From()->getData())){
-                    graphkruskal->insertEdge(it_sort->second.first , it_sort->second.second , it_sort->first);
-                    disjoinset.Union(it_sort->second.first , it_sort->second.second );
-                }
-            }*/
             return *graphkruskal;
-        }else{
-            cout<<"No s epuede construir";
+        }
+        else{
+            cout<<"No se puede construir";
         }
     }
 
@@ -455,7 +441,7 @@ public:
             cout << "Es un Grafo denso" << endl;
         else if( 0 < densidad < 0.6)
             cout << "Es un grafo disperso" << endl;
-        if(isConexo)
+        if(!isConexo)
             cout << "Es un Grafo conexo" << endl;
         else
             cout << "Es un grafo no conexo" << endl;
