@@ -376,8 +376,8 @@ public:
             return false;
     }
 
-    Graph <T> kruskal( Graph<T*> A){
-        if(A.isDigrafo()){
+    Graph <T> kruskal(){
+        if(isDigrafo()){
             //multimap<list<Edge<T>*>*,pair<T,T>> edges_sort ;
             list<Edge<T>*>* edges_sort = new list<Edge<T>*>;
             auto *graphkruskal = new Graph;
