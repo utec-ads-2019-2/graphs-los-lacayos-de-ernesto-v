@@ -197,7 +197,7 @@ public:
 
     bool fuerteconexo(){
         if(isConex()){
-            if(esDigrafo()){
+            if(!esDigrafo()){
                 return true;
             }
             map<int ,bool> visited;
@@ -368,23 +368,25 @@ public:
             cout << "Es un Grafo dirigido" << endl;
         else
             cout << "Es un grafo no dirigido" << endl;
-
         if(isBipartito)
             cout << "Es Bipartito " << endl;
         else
             cout << "No es Bipartito" << endl;
-
         if( 1 > densidad >= 0.6)
             cout << "Es un Grafo denso" << endl;
         else if( 0 < densidad < 0.6)
             cout << "Es un grafo disperso" << endl;
-
         if(isConexo)
             cout << "Es un Grafo conexo" << endl;
         else
             cout << "Es un grafo no conexo" << endl;
-    }
+        if(fuerteconexo())
+            cout << "Es fuerteconexo"<< endl ;
+        else
+            cout << "No es fuertemente conexo";
 
+    }
+    
     double calculateDensity(){
         auto temp = Size();
         if(temp <= 1){
