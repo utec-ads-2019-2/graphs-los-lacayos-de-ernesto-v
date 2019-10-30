@@ -167,8 +167,54 @@ public:
         isConexo =true;
         return true;
     }
-    bool fuerteconexo(){
+    void DFS(int v, map<int ,bool> visited) {
+        visited[v] = true;
+        auto vertice = (*nodos)[v];
+        auto ListaTemp = vertice->getAristas();
+        for (auto it = ListaTemp->begin(); it != ListaTemp->end(); it++) {
+            int visit = ((*it)->get_To()->getId() == v) ? (*it)->get_From()->getId() : (*it)->get_To()->getId();
+                if(!visited[visit])
+                    DFS(visit, visited);
+        }
+    }
 
+    Graph<T> getTranspose() {
+        Graph<T> temp;
+        for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
+            temp.insertNode(it->second);
+        }
+        for (auto it = nodos->begin(); it != nodos->end() ; ++it){
+            for (auto ite = it->second->getAristas()->begin(); ite != it->second->getAristas()->end(); ite++)
+                temp.insertEdge((*ite)->get_To(), (*ite)->get_From(), (*ite)->getWeight());
+
+        }
+        return temp;
+    }
+
+    map<int,Node<T>*>& getNodos() {
+        return *nodos;
+    }
+
+    bool fuerteconexo(){
+        if(isConex()){
+            if(esDigrafo()){
+                return true;
+            }
+            map<int ,bool> visited;
+            Graph trans = this->getTranspose();
+            for(auto v = trans.getNodos().begin(); v != trans.getNodos().end(); v++)
+                visited.insert({v->first, false});
+
+            trans.DFS(visited.begin()->first,visited);
+
+            for (auto v : visited) {
+                if (!visited.at(v.first)){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
     int get_Aristas(){
         return Aristas;
@@ -312,6 +358,7 @@ public:
             cout << "El grafo es direccionado; se necesita un Grafo no direccionado";
         }
     }
+    
     void getProperties(){
         isConex();
         bipartito();
