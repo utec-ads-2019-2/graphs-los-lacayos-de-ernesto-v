@@ -38,10 +38,12 @@ public:
         return aristas;
     };
     void print_aristas(){
+        cout << "El nodo " << id << " se dirige a: { ";
         for(auto it = aristas->cbegin(); it !=  aristas->cend(); it++){
             auto temp2 = *it;
-            cout <<  temp2->getWeight() << " ";
+            cout << "("<< temp2->get_To()->getId() << " con peso: " << temp2->getWeight() << ") ";
         }
+        cout << "}";
     }
     void setId(int a){
         id = a;
