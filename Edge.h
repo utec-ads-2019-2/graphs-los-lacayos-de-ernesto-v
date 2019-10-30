@@ -4,7 +4,6 @@
 #include "nodos.h"
 
 #include <list>
-
 using namespace std;
 template <typename A>
 class Node;
