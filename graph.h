@@ -22,11 +22,8 @@ public:
         nodos = new map<int,Node<T>*>;
         Aristas=0;
     }
-
-    void printGraph(){
-        for(auto it = nodos->cbegin() ; it != nodos->cend() ; it++){
-
-        }
+    void printEdge(double peso){
+        auto temp = buscarArista();
     }
     map<int,Node<T>*> * get_map(){
         return nodos;
@@ -38,11 +35,13 @@ public:
                 auto id = edges.front()->get_To();
                 edges.pop_front();
                 if(buscarArista(it->second, id)==nullptr or buscarArista(id,it->second) == nullptr){
-                    return false;
+                    isDigrafo = true;
+                    return true;
                 }
             }
         }
-        return true;
+        isDigrafo = false;
+        return false;
     }
     void insertNode(Node<T>* nodo){
         int id = nodo->getId();
@@ -161,9 +160,11 @@ public:
         }
         for(auto it = conexodet.begin(); it != conexodet.end() ; it++){
             if(!it->second.first or !it->second.second ){
+                isConexo = false;
                 return false;
             }
         }
+        isConexo =true;
         return true;
     }
     bool fuerteconexo(){
@@ -190,10 +191,12 @@ public:
                         color = 'R';
                     }
                 }
-                if(!Biparticion(temp,color))
-                    return false;
+                if(!Biparticion(temp,color)){
+                    isBipartito = false;
+                    return false;}
             }
         }
+        isBipartito = true;
         return true;
     }
 
@@ -289,7 +292,6 @@ public:
                        ed->set_taken();
                        auto temp = buscarArista(ed->get_To(),ed->get_From());
                        temp->set_taken();
-
                        //inserto las aristas en el nuevo grafo
                        auto nodo_to = newgraph.buscarVertice(ed->get_To()->getId());
                        auto nodo_from = newgraph.buscarVertice(ed->get_From()->getId());
@@ -308,12 +310,35 @@ public:
         }
         else{
             cout << "El grafo es direccionado; se necesita un Grafo no direccionado";
-            exit(100);
         }
     }
+    void getProperties(){
+        isConex();
+        bipartito();
+        calculateDensity();
+        esDigrafo();
+        if(isDigrafo)
+            cout << "Es un Grafo dirigido" << endl;
+        else
+            cout << "Es un grafo no dirigido" << endl;
 
+        if(isBipartito)
+            cout << "Es Bipartito " << endl;
+        else
+            cout << "No es Bipartito" << endl;
 
-    void calculateDensity(){
+        if( 1 > densidad >= 0.6)
+            cout << "Es un Grafo denso" << endl;
+        else if( 0 < densidad < 0.6)
+            cout << "Es un grafo disperso" << endl;
+
+        if(isConexo)
+            cout << "Es un Grafo conexo" << endl;
+        else
+            cout << "Es un grafo no conexo" << endl;
+    }
+
+    double calculateDensity(){
         auto temp = Size();
         if(temp <= 1){
             densidad = 0;
@@ -321,6 +346,7 @@ public:
         else{
             densidad = Aristas/(temp*(temp-1));
         }
+        return densidad;
     }
 
     ~Graph(){
