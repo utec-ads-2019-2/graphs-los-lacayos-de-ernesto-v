@@ -1,4 +1,3 @@
-
 #include "nlohmann/json.hpp"
 #include <iostream>
 #include <vector>
@@ -14,7 +13,7 @@ Edge<Aeropuerto*>* getEdge(Node<Aeropuerto*>* _from, Node<Aeropuerto*>* _to){
     auto long1 =  _from->getData()->getLongitude();
     auto lat2 = _to->getData()->getLatitude();
     auto long2 =  _to->getData()->getLongitude();
-    auto peso =  12742*asin(sqrt(pow(sin((lat2-lat1)*(M_PI/180)/2),2) + pow(sin((long2-long1)*(M_PI/180)/2),2) * cos(lat1*M_PI/180) * cos(lat2*M_PI/180)));;
+    auto peso =  12742*asin(sqrt(pow(sin((lat2-lat1)*(M_PI/180)/2),2) + pow(sin((long2-long1)*(M_PI/180)/2),2) * cos(lat1*M_PI/180) * cos(lat2*M_PI/180)));
     ed->setWeight(peso);
     return ed;
 }
