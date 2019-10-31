@@ -28,7 +28,7 @@ public:
         return nodos;
     }
     bool esDigrafo(){
-        for (auto it = nodos->begin(); it != nodos->end(); it++) {
+        for (auto it = nodos->cbegin(); it != nodos->cend(); it++) {
             list<Edge<T>*> edges = *(it->second->getAristas());
             for (int i = 0; i < edges.size(); i++) {
                 auto id = edges.front()->get_To();
@@ -105,7 +105,6 @@ public:
     void printAristas(){
         for(auto it = nodos->cbegin(); it!= nodos->cend();it++){
             auto temp = it->second;
-
             temp->print_aristas();
             cout << endl;
         }
@@ -330,11 +329,11 @@ public:
         if(nodo){
             if(!esDigrafo()) {
                 cout << "El orden de las aristas es: ";
-            vector<Node<T> *> a;
-            Graph<T> newgraph;
+            vector<Node<T>*> a;
+            auto newgraph = new Graph<T>;
             for(auto it = nodos->cbegin(); it!= nodos->cend(); it++){
                 auto newnode = new Node<T>(it->second);
-                newgraph.insertNode(newnode);
+                newgraph->insertNode(newnode);
             }
             for(int i = 0; i < nodos->size(); i++){
                    a.push_back(nodo);
@@ -343,11 +342,11 @@ public:
                        ed->set_taken();
                        auto temp = buscarArista(ed->get_To(),ed->get_From());
                        temp->set_taken();
-                       auto nodo_to = newgraph.buscarVertice(ed->get_To()->getId());
-                       auto nodo_from = newgraph.buscarVertice(ed->get_From()->getId());
+                       auto nodo_to = newgraph->buscarVertice(ed->get_To()->getId());
+                       auto nodo_from = newgraph->buscarVertice(ed->get_From()->getId());
                        cout << "{ " << nodo_from->getId() << " , " << nodo_to->getId() << " } ";
-                       newgraph.insertEdge(nodo_from,nodo_to,ed->getWeight());
-                       newgraph.insertEdge(nodo_to,nodo_from,ed->getWeight());
+                       newgraph->insertEdge(nodo_from,nodo_to,ed->getWeight());
+                       newgraph->insertEdge(nodo_to,nodo_from,ed->getWeight());
                        if(in(a,ed->get_To()))
                            nodo = ed->get_From();
                        else
@@ -358,7 +357,7 @@ public:
                    }
             }
             cout << endl;
-            return newgraph;
+            return *newgraph;
         }
         else{
                 cout << "El grafo es direccionado; se necesita un Grafo no direccionado";
@@ -463,34 +462,25 @@ public:
             cout << "Es Bipartito " << endl;
         else
             cout << "No es Bipartito" << endl;
-        if( 1 >= densidad >= 0.6)
-            cout << "Es un Grafo denso" << endl;
-        else if( 0 <= densidad < 0.6)
+        if( 1 >= densidad && densidad >= 0.6){
+            cout << "Es un Grafo denso" << endl;}
+        else if( 0 <= densidad && densidad < 0.6)
             cout << "Es un grafo disperso" << endl;
 
     }
     double calculateDensity(){
         auto temp = Size();
-        if(esDigrafo()){
             if(temp <= 1){
                 densidad = 0;
             }
             else{
-                densidad = Aristas/(temp*(temp-1));
+                densidad = Aristas/float((temp*(temp-1)));
             }
-        }
-        else{
-            if(temp <= 1){
-                densidad = 0;
-            }
-            else{
-                densidad = 2*Aristas/(temp*(temp-1));
-            }
-        }
         return densidad;
     }
 
     ~Graph(){
+
         for(auto it = nodos->cbegin(); it!= nodos->cend(); it++){
             auto temp = it->second;
             auto temp2 = temp->getAristas();
