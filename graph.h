@@ -288,30 +288,29 @@ public:
                 DFS(visit, visited);
         }
     }
-    Graph<T> getTranspose() {
-        Graph<T> temp;
-        for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
-            temp.insertNode(it->second);
-        }
-        for (auto it = nodos->begin(); it != nodos->end() ; ++it){
-            for (auto ite = it->second->getAristas()->begin(); ite != it->second->getAristas()->end(); ite++)
-                temp.insertEdge((*ite)->get_To(), (*ite)->get_From(), (*ite)->getWeight());
-
-        }
-        return temp;
-    }
 
     map<int,Node<T>*>& getNodos() {
         return *nodos;
     }
+
     bool fuerteconexo(){
         if(esDigrafo()){
             map<int ,bool> visited;
-            Graph trans = this->getTranspose();
-            for(auto v = trans.getNodos().begin(); v != trans.getNodos().end(); v++)
+
+            auto temp = new Graph;
+            for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
+                temp->insertNode(it->second);
+            }
+            for (auto it = nodos->begin(); it != nodos->end() ; ++it){
+                for (auto ite = it->second->getAristas()->begin(); ite != it->second->getAristas()->end(); ite++)
+                    temp->insertEdge((*ite)->get_To(), (*ite)->get_From(), (*ite)->getWeight());
+
+            }
+
+            for(auto v = temp->getNodos().begin(); v != temp->getNodos().end(); v++)
                 visited.insert({v->first, false});
 
-            trans.DFS(visited.begin()->first,visited);
+            temp->DFS(visited.begin()->first,visited);
 
             for (auto v : visited) {
                 if (!visited.at(v.first)){
