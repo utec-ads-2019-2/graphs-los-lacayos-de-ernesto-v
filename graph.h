@@ -2,6 +2,7 @@
 #define GRAPHS_LOS_LACAYOS_DE_ERNESTO_V_GRAPH_H
 #include "Edge.h"
 #include <map>
+#include <limits.h>
 #include <fstream>
 #include <iostream>
 
@@ -14,6 +15,7 @@ class Graph {
     bool isDigrafo;
     bool isConexo;
     bool isBipartito;
+    bool fConexto;
     double densidad;
     int Aristas;
 public:
@@ -22,30 +24,42 @@ public:
         Aristas=0;
     }
 
-    void printGraph(){
-        for(auto it = nodos->cbegin() ; it != nodos->cend() ; it++){
-
-        }
-    }
-    map<int,Node<T>*> * get_map(){
+        map<int,Node<T>*> * get_map(){
         return nodos;
     }
+
     bool esDigrafo(){
-        for (auto it = nodos->begin(); it != nodos->end(); it++) {
-            list<Edge<T>*> edges = *(it->second->getAristas());
-            for (int i = 0; i < edges.size(); i++) {
-                auto id = edges.front()->get_To();
-                edges.pop_front();
+        for (auto it = nodos->cbegin(); it != nodos->cend(); it++) {
+            auto edges = it->second->getAristas();
+            for (auto it2 = edges->cbegin(); it2 != edges->cend() ; it2++) {
+                auto id = (*it2)->get_To();
                 if(buscarArista(it->second, id)==nullptr or buscarArista(id,it->second) == nullptr){
-                    return false;
+                    isDigrafo = true;
+                    return true;
                 }
             }
         }
-        return true;
+        isDigrafo = false;
+        return false;
     }
+
     void insertNode(Node<T>* nodo){
         int id = nodo->getId();
-        nodos[id] = nodo;
+        (*nodos)[id] = nodo;
+    }
+    bool insertEdge(Node<T>* from, Node<T>* to,double peso){
+        if(!buscarArista(from,to)){
+            auto temp = buscarVertice(from->getId());
+            auto vec = temp->getAristas();
+            auto ed = new Edge<T>(from,to);
+            ed->setWeight(peso);
+            vec->push_back(ed);
+            Aristas++;
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     void removeNode(int id){
         auto deleteNode = (*nodos)[id];
@@ -83,7 +97,7 @@ public:
         }
     }
     int Size(){
-        cout << nodos->size();
+        return nodos->size();
     }
 
     void AumtentarArista(){
@@ -123,7 +137,8 @@ public:
         }
         return nullptr;
     }
-    bool esconexo(){
+    bool isConex(){
+        if(!esDigrafo()){
         map<int, pair<bool ,bool > > conexodet;
         auto aristas_a = new list<Edge<T>*>;
         for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
@@ -146,18 +161,23 @@ public:
         }
         for(auto it = conexodet.begin(); it != conexodet.end() ; it++){
             if(!it->second.first or !it->second.second ){
+                isConexo = false;
                 return false;
             }
         }
+        isConexo =true;
         return true;
-    }
-    bool fuerteconexo(){
-
+        }
+        else
+            return false;
     }
     int get_Aristas(){
-        return Aristas;
+        if(esDigrafo())
+            return Aristas;
+        else{
+            return Aristas / 2;
+        }
     }
-   
     void setNodesBlank(){
         for(auto it  = nodos->cbegin(); it!= nodos->cend(); it++){
             auto temp = it->second;
@@ -176,10 +196,12 @@ public:
                         color = 'R';
                     }
                 }
-                if(!Biparticion(temp,color))
-                    return false;
+                if(!Biparticion(temp,color)){
+                    isBipartito = false;
+                    return false;}
             }
         }
+        isBipartito = true;
         return true;
     }
 
@@ -214,18 +236,239 @@ public:
         return true;
     }
 
-    void calculateDensity(){
-        auto temp = Size();
-        if(temp <= 1){
-            densidad = 0;
+    bool inVec(Edge<T>* a,vector<Node<T>*> vec){
+        auto temp = a->get_To();
+        auto temp2 = a->get_From();
+        bool x = false;
+        bool y = false;
+        for(int i = 0; i<vec.size(); i++){
+            Node<T>* nodo = vec[i];
+            if(temp == nodo)
+                x = true;
+            if(temp2 == nodo)
+                y = true;
         }
-        else{
-            densidad = Aristas/(temp*(temp-1));
+        return x&&y;
+    }
+    Edge<T>* findMin(vector<Node<T>*> vec){
+        int s = vec.size();
+        if(s == 0 || s == nodos->size()){
+            return nullptr;
+        }
+        auto min = new Edge<T>;
+        auto del = min;
+        min->setWeight(INT16_MAX);
+        for(auto it = vec.cbegin(); it!= vec.cend(); it++){
+            auto temp = *it;
+            auto lista = temp->getAristas();
+            for(auto it = lista->cbegin(); it!= lista->cend(); it++){
+                auto temp2 =(*it);
+                if(!temp2->get_taken()&& temp2->getWeight()<min->getWeight()){
+                    if(!inVec(temp2,vec)){
+                        min = temp2;
+                    }
+                }
+            }
+        }
+        return min;
+    }
+    bool in(vector<Node<T>*>a,Node<T>* b){
+        for(auto it = a.cbegin(); it!= a.cend();it++){
+            if(*it == b)
+                return true;
+        }
+        return false;
+    }
+
+    void DFS(int v, map<int ,bool> visited) {
+        visited[v] = true;
+        auto vertice = (*nodos)[v];
+        auto ListaTemp = vertice->getAristas();
+        for (auto it = ListaTemp->begin(); it != ListaTemp->end(); it++) {
+            int visit = ((*it)->get_To()->getId() == v) ? (*it)->get_From()->getId() : (*it)->get_To()->getId();
+            if(!visited[visit])
+                DFS(visit, visited);
         }
     }
 
+    map<int,Node<T>*>& getNodos() {
+        return *nodos;
+    }
+
+    bool fuerteconexo(){
+        if(esDigrafo()){
+            map<int ,bool> visited;
+            auto temp = new Graph;
+            for (auto it = nodos->begin(); it != nodos->end() ; ++it) {
+                temp->insertNode(it->second);
+            }
+            for (auto it = nodos->begin(); it != nodos->end() ; ++it){
+                for (auto ite = it->second->getAristas()->begin(); ite != it->second->getAristas()->end(); ite++)
+                    temp->insertEdge((*ite)->get_To(), (*ite)->get_From(), (*ite)->getWeight());
+
+            }
+            for(auto v = temp->getNodos().begin(); v != temp->getNodos().end(); v++)
+                visited.insert({v->first, false});
+            temp->DFS(visited.begin()->first,visited);
+            for (auto v : visited) {
+                if (!visited.at(v.first)){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return isConexo;
+    }
+
+
+    Graph <T> Prim (int key){
+        auto nodo = buscarVertice(key);
+        if(nodo){
+            if(!esDigrafo()) {
+                cout << "El orden de las aristas es: ";
+            vector<Node<T>*> a;
+            auto newgraph = new Graph<T>;
+            for(auto it = nodos->cbegin(); it!= nodos->cend(); it++){
+                auto newnode = new Node<T>(it->second);
+                newgraph->insertNode(newnode);
+            }
+            for(int i = 0; i < nodos->size(); i++){
+                   a.push_back(nodo);
+                   auto ed = findMin(a);
+                   if(ed){
+                       ed->set_taken();
+                       auto temp = buscarArista(ed->get_To(),ed->get_From());
+                       temp->set_taken();
+                       auto nodo_to = newgraph->buscarVertice(ed->get_To()->getId());
+                       auto nodo_from = newgraph->buscarVertice(ed->get_From()->getId());
+                       cout << "{ " << nodo_from->getId() << " , " << nodo_to->getId() << " } ";
+                       newgraph->insertEdge(nodo_from,nodo_to,ed->getWeight());
+                       newgraph->insertEdge(nodo_to,nodo_from,ed->getWeight());
+                       if(in(a,ed->get_To()))
+                           nodo = ed->get_From();
+                       else
+                           nodo = ed->get_To();
+                   }
+                   else{
+                       break;
+                   }
+            }
+            cout << endl;
+            return *newgraph;
+        }
+        else{
+                cout << "El grafo es direccionado; se necesita un Grafo no direccionado";
+            throw new out_of_range("El grafo es direccionado; se necesita un Grafo no direccionado");
+
+            }
+        }
+        else{
+            cout << "El nodo ingresado no existe";
+            throw new out_of_range("El nodo ingresado no existe");
+        }
+    }
+    void mapkrus(map<int, Node<T>*>*mapa, Node<T>* node){
+        if(id_null(mapa,node) == true) {
+            mapa->erase(node->getId());
+            mapa->insert(pair<int, Node<T>*>(node->getId(),node));
+        }
+    }
+    bool id_null(map<int, Node<T>*>* mapa, Node<T>* node){
+        if(mapa->operator[](node->getId()) == nullptr)
+            return true;
+        else
+            return false;
+    }
+
+    Graph <T> kruskal(){
+        if(!esDigrafo()){
+            auto edges_sort = new list<Edge<T>*>;
+            auto *graphkruskal = new Graph;
+            auto mapeo_for_krus = graphkruskal->get_map();
+            for(auto it = nodos->begin(); it != nodos->end() ; it++){
+                Node<T>* ite = it->second;
+                for(auto temp_edges = ite->getAristas()->begin(); temp_edges !=ite->getAristas()->end(); temp_edges++ ){
+                    if (edges_sort->size()==0){
+                        edges_sort->push_back(*temp_edges);
+                    }else{
+                        int ctrl=0;
+                        auto it_temp = edges_sort->begin();
+                        while((edges_sort->size()> ctrl) && ((*it_temp)->getWeight()>(*temp_edges)->getWeight()) ){
+                            ctrl++;
+                            it_temp++;
+                        }
+                        edges_sort->insert((it_temp),(*temp_edges));
+                    }
+                }
+            }
+            do {
+                auto node_to = new Node<T>(edges_sort->back()->get_To());
+                auto node_from = new Node<T>(edges_sort->back()->get_From());
+                node_to->setId(node_to->getId());
+                node_from->setId(node_from->getId());
+                auto newed = buscarArista(edges_sort->back()->get_From(), edges_sort->back()->get_To());
+                edges_sort->pop_back();
+                node_to->getAristas()->clear();
+                node_from->getAristas()->clear();
+                if(id_null(mapeo_for_krus,node_from)==true or id_null(mapeo_for_krus,node_to)==true){
+                    mapkrus(mapeo_for_krus,node_from);
+                    mapkrus(mapeo_for_krus,node_to);
+                    cout << "{ " << node_from->getId() << " , " << node_to->getId() << " } ";
+                    graphkruskal->insertEdge(node_from,node_to,newed->getWeight());
+                    graphkruskal->insertEdge(node_to,node_from,newed->getWeight());
+                }
+            }while(edges_sort->size() > 0);
+            return *graphkruskal;
+        }
+        else{
+            cout<<"No se puede construir";
+            throw new out_of_range("No se  puede construir");
+        }
+    }
+    void getProperties(){
+        isConex();
+        bipartito();
+        calculateDensity();
+        esDigrafo();
+        //fConexto = fuerteconexo();
+
+        if(isDigrafo){
+            cout << "Es un Grafo dirigido" << endl;
+        }
+        else {
+            cout << "Es un grafo no dirigido" << endl;
+        }
+        if(fConexto)
+            cout << "Es fuerteconexo"<< endl ;
+        else
+            cout << "No es fuertemente conexo" << endl;
+        if(isConexo)
+            cout << "Es un Grafo conexo" << endl;
+        else
+            cout << "Es un grafo no conexo" << endl;
+        if(isBipartito)
+            cout << "Es Bipartito " << endl;
+        else
+            cout << "No es Bipartito" << endl;
+        if( 1 >= densidad && densidad >= 0.6){
+            cout << "Es un Grafo denso" << endl;}
+        else if( 0 <= densidad && densidad < 0.6)
+            cout << "Es un grafo disperso" << endl;
+    }
+
+    double calculateDensity(){
+        auto temp = Size();
+            if(temp <= 1){
+                densidad = 0;
+            }
+            else{
+                densidad = Aristas/float((temp*(temp-1)));
+            }
+        return densidad;
+    }
+
     ~Graph(){
-        /*for(auto it = nodos->cbegin(); it!= nodos->cend(); it++){
+        for(auto it = nodos->cbegin(); it!= nodos->cend(); it++){
             auto temp = it->second;
             auto temp2 = temp->getAristas();
             for(auto i = temp2->cbegin(); i != temp2->cend(); i++){
@@ -236,7 +479,7 @@ public:
             auto temp = it->second;
             delete temp;
         }
-        delete nodos;*/
+        delete nodos;
     }
 };
 
