@@ -14,10 +14,24 @@ private:
     Node<E>* from;
     Node<E>* to;
     double peso;
+    bool taken;
 public:
+    Edge(){
+        from = nullptr;
+        to = nullptr;
+        peso = 0;
+        taken = false;
+    }
     Edge(Node<E>* _from, Node<E>* _to) {
         from = _from;
         to = _to;
+        taken = false;
+    }
+    void set_taken(){
+        taken = true;
+    }
+    bool get_taken(){
+        return taken;
     }
     void setWeight(double x){
         peso = x;
