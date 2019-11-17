@@ -14,15 +14,20 @@ private:
     E Data;
     char color;
     int id;
-
-public:
     std::list<Edge<E>*>* aristas;
+public:
+
     Node(E valor){
         aristas = new list<Edge<E>*>;
         Data = valor;
         color = 'B';
     }
-
+    Node(Node<E>* a){
+        Data = a->getData();
+        color = a->getColor();
+        id = a->getId();
+        aristas = new list<Edge<E>*>;
+    }
     void insertEdge(Edge<E>*to){
         aristas->push_back(to);
     }
@@ -33,10 +38,12 @@ public:
         return aristas;
     };
     void print_aristas(){
+        cout << "El nodo " << id << " se dirige a: { ";
         for(auto it = aristas->cbegin(); it !=  aristas->cend(); it++){
             auto temp2 = *it;
-            cout <<  temp2->getWeight() << " ";
+            cout << "("<< temp2->get_To()->getId() << " con peso: " << temp2->getWeight() << ") ";
         }
+        cout << "}";
     }
     void setId(int a){
         id = a;
