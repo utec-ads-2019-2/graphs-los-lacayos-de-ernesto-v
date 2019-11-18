@@ -5,7 +5,8 @@
 #include <limits.h>
 #include <fstream>
 #include <iostream>
-
+#include <stack>
+#include <queue>
 template <typename E>
 class Node;
 
@@ -456,6 +457,33 @@ public:
             cout << "Es un grafo disperso" << endl;
     }
 
+    vector <Node<T>*>*  BFS (int start){
+            auto vec = new vector<Node<T>*>;
+            setNodesBlank();
+            auto s = (*nodos)[start];
+            queue<Node<T>*> a;
+            a.push(s);
+            vec->push_back(s);
+            s->setColor('T');
+            while(!a.empty()) {
+                Node<T>* v = a.front();
+                a.pop();
+                auto ed = v->getAristas();
+                for(auto it = ed->cbegin() ; it != ed->cend(); it++){
+                    auto to = (*it)->get_To();
+                    if(to->getColor()== 'B'){
+                        a.push(to);
+                        vec->push_back(to);
+                        to->setColor('T');
+                    }
+                }
+            }
+        return vec;
+    }
+
+    Graph <T> Dijsktra(){
+            
+    }
     double calculateDensity(){
         auto temp = Size();
             if(temp <= 1){
