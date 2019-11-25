@@ -481,8 +481,125 @@ public:
         return vec;
     }
 
-    Graph <T> Dijsktra(){
-            
+    Graph<T>* Dijsktra(int key){
+        setNodesBlank();
+        auto newGraph = new Graph<T>;
+        map<Node<T>*,Node<T>*> llegadas;
+        vector<pair<Node<T>*,double>> vec;
+        for(auto it = nodos->cbegin(); it!= nodos->cend(); it++){
+            auto newNode = new Node<T>(it->second);
+            llegadas[newNode] = nullptr;
+            newGraph->insertNode(newNode);
+        }
+        for(auto it = nodos->cbegin(); it != nodos->cend(); it++){
+            pair<Node<T>*,double> p;
+            p.first = it->second;
+            if(it->first != key)
+                p.second = INFINITY;
+            else
+                p.second = 0;
+            vec.push_back(p);
+        }
+        auto temp = buscarVertice(key);
+        double cont = 0;
+        for(int i = 0; i < nodos->size() ; i++){
+            temp->setColor('m');
+            for(auto j = 0; j < vec.size(); j++){
+                auto ida = vec[j].first;
+                if(ida->getColor() == 'B'){
+                    auto arista = buscarArista(temp, ida);
+                    if (arista) {
+                        double val = cont + arista->getWeight();
+                        if ((vec[j]).second > val) {
+                            auto x = newGraph->buscarVertice(temp->getId());
+                            auto y = newGraph->buscarVertice((vec[j]).first->getId());
+                             newGraph->insertEdge(x,y,val-cont);
+                             if(llegadas[y]){
+                                 newGraph->removeEdge(llegadas[y],y);
+                             }
+                             llegadas[y]= x;
+                            (vec[j]).second = val;
+                        }
+                    }
+                }
+            }
+            pair<Node<T>*,double> temporal;
+            temporal.second = INFINITY;
+            for(auto it = vec.cbegin(); it != vec.cend(); it++) {
+                auto next = (*it).first;
+                if (next->getColor() == 'B') {
+                    if ((*it).second < temporal.second) {
+                        temporal.second = (*it).second;
+                        temporal.first = (*it).first;
+                    }
+                }
+            }
+            temp = temporal.first;
+            cont = temporal.second;
+
+        }
+        cout << "El nodo con key: " << key << " LLEGA A: " << endl;
+        for(auto it = vec.cbegin(); it != vec.cend(); it++){
+            cout << (*it).first->getId() << " CON PESO " << (*it).second << endl;
+        }
+        return newGraph;
+    }
+
+    Graph <T> * BellmanFord(int key){
+        setNodesBlank();
+        auto newGraph = new Graph<T>;
+        vector<Node<T>*> res;
+        map<Node<T>*,double> val;
+        map<Node<T>*,Node<T>*> llegadas;
+        for(auto it = nodos->cbegin() ; it != nodos->cend(); it++){
+            res.push_back(it->second);
+            val[it->second] = INFINITY;
+            llegadas[it->second] = nullptr;
+        }
+
+        auto temp = buscarVertice(key);
+        val[temp] = 0;
+        temp->setColor('m');
+        bool cambio=true;
+        for(auto it = nodos->cbegin(); it!= nodos->cend() ; it++){
+            newGraph->insertNode(new Node<T>(buscarVertice(it->first)));
+        }
+        while(cambio) {
+            cambio = false;
+            for (auto it = res.cbegin(); it != res.cend(); it++) {
+                auto temp2 = *it;
+                if (temp2->getColor() == 'm') {
+                    auto aris = temp2->getAristas();
+                    for (auto it2 = aris->cbegin(); it2 != aris->cend(); it2++) {
+                        auto nodeFROM = (*it2)->get_From();
+                        auto nodeTO = (*it2)->get_To();
+                        auto a = val[nodeTO];
+                        //comparando si es más corto
+                        if (val[nodeFROM] + (*it2)->getWeight() < val[nodeTO]) {
+                            llegadas[nodeTO] = nodeFROM;
+                            val[nodeTO] = val[nodeFROM] + (*it2)->getWeight();
+                            nodeTO->setColor('m');
+                            cambio = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        cout << "El nodo con key "  << key << " llega a : " <<endl;
+        for(auto it = nodos->cbegin(); it!=nodos->cend() ; it++ ){
+            cout << it->second->getId() << " con peso : " << val[it->second] << endl;
+        }
+        for(auto it = llegadas.cbegin() ; it != llegadas.cend() ; it++) {
+            Node<T>* NodeTo = it->first;
+            Node<T>* NodeFrom = it->second;
+            if(NodeFrom) {
+                auto oriArista = buscarArista(NodeFrom, NodeTo);
+                newGraph->insertEdge(buscarVertice(NodeFrom->getId()), buscarVertice(NodeTo->getId()),
+                                     oriArista->getWeight());
+            }
+        }
+        return newGraph;
     }
     double calculateDensity(){
         auto temp = Size();
