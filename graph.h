@@ -439,7 +439,6 @@ public:
     }
     void fWarshall(){
         int sM = nodos->size();
-        cout<<sM;
         int matrixDist[sM][sM];
         int matrixSeq[sM][sM];
         for(int i=0; i<sM; i++){
