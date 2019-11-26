@@ -437,6 +437,92 @@ public:
         }
 
     }
+    void fWarshall(){
+        int sM = nodos->size();
+        cout<<sM;
+        int matrixDist[sM][sM];
+        int matrixSeq[sM][sM];
+        for(int i=0; i<sM; i++){
+            for(int j=0; j<sM; j++){
+                if(i!=j){matrixSeq[i][j] = j+1;}
+                else{matrixSeq[i][j] = 0;}
+            }
+        }
+        for(int i=0; i<sM; i++){
+            for(int j=0; j<sM; j++){
+                if(i!=j){
+                    if(buscarArista(buscarVertice(i+1), buscarVertice(j+1))){
+                        matrixDist[i][j] = buscarArista(buscarVertice(i+1), buscarVertice(j+1))->getWeight();
+                    }
+                    else{
+                        matrixDist[i][j] = 10000;
+                    }
+                }
+                else{
+                    matrixDist[i][j] = 0;
+                }
+            }
+        }
+        for(int y=0; y<sM; y++){
+            int matrixDist2[sM][sM];
+            int matrixSeq2[sM][sM];
+            for(int i=0; i<sM; i++) {
+                for (int j = 0; j < sM; j++) {
+                    matrixDist2[i][j] = 0;
+                    matrixSeq2[i][j] = 0;
+                }
+            }
+            for(int i=0; i<sM;i++){
+                matrixDist2[i][y]=matrixDist[i][y];
+                matrixDist2[y][i]=matrixDist[y][i];
+            }
+            for(int i=0; i<sM; i++){
+                for(int j=0; j<sM; j++){
+                    matrixSeq2[i][j] = matrixSeq[i][j];
+                }
+            }
+
+            for(int i=0; i<sM; i++){
+                for(int j=0; j<sM; j++){
+                    if(i!=y or j!=y or i!=j){
+                        if(matrixDist[i][j] > matrixDist[i][y] + matrixDist[y][j]){
+                            matrixDist2[i][j] = matrixDist[i][y] + matrixDist[y][j];
+                            matrixSeq2[i][j] = y+1;
+                        }
+                        else{
+                            matrixDist2[i][j] = matrixDist[i][j];
+                        }
+                    }
+                }
+            }
+            for(int i=0; i<sM; i++) {
+                for (int j = 0; j < sM; j++) {
+                    matrixDist[i][j] = matrixDist2[i][j];
+                    matrixSeq[i][j] = matrixSeq2[i][j];
+                }
+            }
+        }
+        cout<<"It "<<sM<<':';
+        cout<<"\n\nDistance table:";
+        for(int i=0; i<sM; i++){
+            cout<<'\n';
+            for(int j=0; j<sM;j++){
+                if(matrixDist[i][j] >= 10000){
+                    cout<<"i ";
+                }
+                else{
+                    cout<<matrixDist[i][j]<<" ";
+                }
+            }
+        }
+        cout<<"\n\nSequence table:";
+        for(int i=0; i<sM; i++){
+            cout<<'\n';
+            for(int j=0; j<sM;j++){
+                cout<<matrixSeq[i][j]<<" ";
+            }
+        }
+    }
     void getProperties(){
         isConex();
         bipartito();
